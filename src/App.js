@@ -76,18 +76,20 @@ class Grid extends Component {
 
   render() {
     return (
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${this.props.cols}, 50px)`, gap: "2px" }}>
-        {this.state.grid.map((row, rowIndex) =>
-          row.map((cellColor, colIndex) => (
-            <Cell
-              key={`${rowIndex}-${colIndex}`}
-              row={rowIndex}
-              col={colIndex}
-              backgroundColor={cellColor}
-              onClick={this.handleCellClick}
-            />
-          ))
-        )}
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <div style={{ display: "grid", gridTemplateColumns: `repeat(${this.props.cols}, 50px)`, gap: "2px" }}>
+          {this.state.grid.map((row, rowIndex) =>
+            row.map((cellColor, colIndex) => (
+              <Cell
+                key={`${rowIndex}-${colIndex}`}
+                row={rowIndex}
+                col={colIndex}
+                backgroundColor={cellColor}
+                onClick={this.handleCellClick}
+              />
+            ))
+          )}
+        </div>
         {/* Pass highlightedCells to the Announcement component */}
         <Announcement highlightedCells={this.state.highlightedCells} />
       </div>
@@ -173,3 +175,4 @@ class App extends Component {
 }
 
 export default App;
+
