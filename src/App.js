@@ -28,12 +28,22 @@ class Grid extends Component {
   constructor(props) {
     super(props);
     // Initializing an 8x8 grid with white background color for each cell
+    const rows = this.props.rows;
+    const cols = this.props.cols;
+
     this.state = {
-      grid: Array(8)
+      grid: Array(rows)
         .fill()
-        .map(() => Array(8).fill("white")),
+        .map(() => Array(cols).fill("white")),
       highlightedCells: [],
     };
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Log when highlighted cells change
+    if (prevState.highlightedCells !== this.state.highlightedCells) {
+      console.log("Highlighted cells updated:", this.state.highlightedCells);
+    }
   }
 
   handleCellClick = (row, col) => {
@@ -41,8 +51,8 @@ class Grid extends Component {
     const newGrid = this.state.grid.map((r, rIdx) =>
       rIdx === row
         ? r.map((color, cIdx) =>
-            cIdx === col ? (color === "white" ? "blue" : "white") : color
-          )
+          cIdx === col ? (color === "white" ? "blue" : "white") : color
+        )
         : r
     );
 
@@ -97,13 +107,69 @@ class Announcement extends Component {
   }
 }
 
+class Control extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      rows: this.props.rows,
+      cols: this.props.cols,
+    };
+  }
+
+
+  render() {
+    return (
+      <div>
+        <h3>Configure grid size:</h3>
+        <div>
+          <label>Rows:</label>
+          <input
+            type="number"
+            value={this.props.rows}
+            onChange={e => this.props.onChangeRows(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Cols:</label>
+          <input
+            type="number"
+            value={this.props.cols}
+            onChange={e => this.props.onChangeCols(e.target.value)}
+          />
+        </div>
+      </div>
+    );
+  }
+}
+
 // Main App component
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      rows: 8,
+      cols: 8,
+    };
+  }
+
+  onChangeCols = value => {
+    console.log("changing cols", value);
+    this.setState({ cols: value });
+  }
+
+  onChangeRows = value => {
+    console.log("changing rows", value);
+    this.setState({ rows: value });
+  }
+
   render() {
     return (
       <div>
         <h1>8x8 Grid Board</h1>
-        <Grid />
+        <Control rows={this.state.rows} cols={this.state.cols} onChangeCols={this.onChangeCols} onChangeRows={this.onChangeRows} />
+        <Grid rows={this.state.rows} cols={this.state.cols} />
       </div>
     );
   }
