@@ -27,7 +27,6 @@ class Cell extends Component {
 class Grid extends Component {
   constructor(props) {
     super(props);
-    // Initializing an 8x8 grid with white background color for each cell
     this.state = {
       grid: this.createGrid(props.rows, props.cols),
       highlightedCells: [],
@@ -41,14 +40,21 @@ class Grid extends Component {
       .map(() => Array(cols).fill("white"));
   };
 
-  // Update grid when rows/cols change using componentDidUpdate
-  componentDidUpdate(prevProps) {
-    if (prevProps.rows !== this.props.rows || prevProps.cols !== this.props.cols) {
-      this.setState({
-        grid: this.createGrid(this.props.rows, this.props.cols),
-        highlightedCells: [], // Optionally reset highlighted cells
-      });
+  // Using getDerivedStateFromProps to update state when props change
+  static getDerivedStateFromProps(nextProps, nextState) {
+    if (
+      nextProps.rows !== nextState.grid.length ||
+      nextProps.cols !== nextState.grid[0].length
+    ) {
+      // Directly return the new grid and reset highlighted cells
+      return {
+        grid: Array(nextProps.rows)
+          .fill()
+          .map(() => Array(nextProps.cols).fill("white")),
+        highlightedCells: [], // Reset highlighted cells when grid size changes
+      };
     }
+    return null; // No state changes
   }
 
   handleCellClick = (row, col) => {
@@ -77,7 +83,13 @@ class Grid extends Component {
   render() {
     return (
       <div style={{ display: "flex", flexDirection: "row" }}>
-        <div style={{ display: "grid", gridTemplateColumns: `repeat(${this.props.cols}, 50px)`, gap: "2px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: `repeat(${this.props.cols}, 50px)`,
+            gap: "2px",
+          }}
+        >
           {this.state.grid.map((row, rowIndex) =>
             row.map((cellColor, colIndex) => (
               <Cell
@@ -124,7 +136,7 @@ class Control extends Component {
           <input
             type="number"
             value={this.props.rows}
-            onChange={e => this.props.onChangeRows(e.target.value)}
+            onChange={(e) => this.props.onChangeRows(e.target.value)}
           />
         </div>
         <div>
@@ -132,7 +144,7 @@ class Control extends Component {
           <input
             type="number"
             value={this.props.cols}
-            onChange={e => this.props.onChangeCols(e.target.value)}
+            onChange={(e) => this.props.onChangeCols(e.target.value)}
           />
         </div>
       </div>
@@ -150,11 +162,11 @@ class App extends Component {
     };
   }
 
-  onChangeCols = value => {
+  onChangeCols = (value) => {
     this.setState({ cols: parseInt(value, 10) });
   };
 
-  onChangeRows = value => {
+  onChangeRows = (value) => {
     this.setState({ rows: parseInt(value, 10) });
   };
 
@@ -175,4 +187,3 @@ class App extends Component {
 }
 
 export default App;
-
