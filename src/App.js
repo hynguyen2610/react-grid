@@ -28,21 +28,26 @@ class Grid extends Component {
   constructor(props) {
     super(props);
     // Initializing an 8x8 grid with white background color for each cell
-    const rows = this.props.rows;
-    const cols = this.props.cols;
-
     this.state = {
-      grid: Array(rows)
-        .fill()
-        .map(() => Array(cols).fill("white")),
+      grid: this.createGrid(props.rows, props.cols),
       highlightedCells: [],
     };
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    // Log when highlighted cells change
-    if (prevState.highlightedCells !== this.state.highlightedCells) {
-      console.log("Highlighted cells updated:", this.state.highlightedCells);
+  // Method to create the grid based on rows and cols
+  createGrid = (rows, cols) => {
+    return Array(rows)
+      .fill()
+      .map(() => Array(cols).fill("white"));
+  };
+
+  // Update grid when rows/cols change using componentDidUpdate
+  componentDidUpdate(prevProps) {
+    if (prevProps.rows !== this.props.rows || prevProps.cols !== this.props.cols) {
+      this.setState({
+        grid: this.createGrid(this.props.rows, this.props.cols),
+        highlightedCells: [], // Optionally reset highlighted cells
+      });
     }
   }
 
@@ -51,8 +56,8 @@ class Grid extends Component {
     const newGrid = this.state.grid.map((r, rIdx) =>
       rIdx === row
         ? r.map((color, cIdx) =>
-          cIdx === col ? (color === "white" ? "blue" : "white") : color
-        )
+            cIdx === col ? (color === "white" ? "blue" : "white") : color
+          )
         : r
     );
 
@@ -71,7 +76,7 @@ class Grid extends Component {
 
   render() {
     return (
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(8, 50px)", gap: "2px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${this.props.cols}, 50px)`, gap: "2px" }}>
         {this.state.grid.map((row, rowIndex) =>
           row.map((cellColor, colIndex) => (
             <Cell
@@ -108,16 +113,6 @@ class Announcement extends Component {
 }
 
 class Control extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      rows: this.props.rows,
-      cols: this.props.cols,
-    };
-  }
-
-
   render() {
     return (
       <div>
@@ -145,7 +140,6 @@ class Control extends Component {
 
 // Main App component
 class App extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -155,20 +149,23 @@ class App extends Component {
   }
 
   onChangeCols = value => {
-    console.log("changing cols", value);
-    this.setState({ cols: value });
-  }
+    this.setState({ cols: parseInt(value, 10) });
+  };
 
   onChangeRows = value => {
-    console.log("changing rows", value);
-    this.setState({ rows: value });
-  }
+    this.setState({ rows: parseInt(value, 10) });
+  };
 
   render() {
     return (
       <div>
         <h1>8x8 Grid Board</h1>
-        <Control rows={this.state.rows} cols={this.state.cols} onChangeCols={this.onChangeCols} onChangeRows={this.onChangeRows} />
+        <Control
+          rows={this.state.rows}
+          cols={this.state.cols}
+          onChangeCols={this.onChangeCols}
+          onChangeRows={this.onChangeRows}
+        />
         <Grid rows={this.state.rows} cols={this.state.cols} />
       </div>
     );
