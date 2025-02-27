@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import SimpleGrid from './SimpleGrid';
 
 test('renders learn react link', () => {
-  render(<App />);
+  render(<SimpleGrid />);
   const linkElement = screen.getByText(/learn react/i);
   expect(linkElement).toBeInTheDocument();
 });
