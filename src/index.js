@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { FiveCircles, FiveLinks, TenLinks } from './grid-hoc/list';
+import SimpleGrid from './simple-grid/SimpleGrid';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    
+    <SimpleGrid />
     <FiveLinks />
     <FiveCircles />
   </React.StrictMode>
